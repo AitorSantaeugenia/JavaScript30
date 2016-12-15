@@ -58,7 +58,26 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  function removeTransition(e) {
+    if (e.propertyName !== 'transform') return;	//Skip it if it's not a transform
+    e.target.classList.remove('playing');		    //Need to change the CSS class = "Key" -> transitionend
+  }
 
+  function playSound(e) {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+    if (!audio) return;					    //Stop the function from running all together - Solo las teclas seleccionadas por pantalla, omitimos las demás
+
+    key.classList.add('playing');		//Vanilla JS, not like Jquery "addClass"
+    audio.currentTime = 0;				  //Rewind to the start - Permite tocar el audio sin retraso, cada vez que tocamos tecla, suena
+    audio.play();
+  }
+ 
+  //ALL KEYS
+  const keys = Array.from(document.querySelectorAll('.key'));
+	//Call to removeTransition function to change the classList "transitionend"
+	keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+  window.addEventListener('keydown', playSound);
 </script>
 
 
